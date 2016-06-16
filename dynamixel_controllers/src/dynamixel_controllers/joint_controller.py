@@ -58,6 +58,8 @@ from std_msgs.msg import Float64
 from dynamixel_msgs.msg import MotorStateList
 from dynamixel_msgs.msg import JointState
 
+from std_msgs.msg import Float64MultiArray
+
 class JointController:
     def __init__(self, dxl_io, controller_namespace, port_namespace):
         self.running = False
@@ -107,6 +109,8 @@ class JointController:
         self.running = True
         self.joint_state_pub = rospy.Publisher(self.controller_namespace + '/state', JointState, queue_size=1)
         self.command_sub = rospy.Subscriber(self.controller_namespace + '/command', Float64, self.process_command)
+
+        self.command_with_speed_sub = rospy.Subscriber(self.controller_namespace + '/command_with_speed', Float64MultiArray, self.process_command_with_speed)
         self.motor_states_sub = rospy.Subscriber('motor_states/%s' % self.port_namespace, MotorStateList, self.process_motor_states)
 
     def stop(self):
@@ -164,6 +168,9 @@ class JointController:
         raise NotImplementedError
 
     def process_command(self, msg):
+        raise NotImplementedError
+
+    def process_command_with_speed(self, msg):
         raise NotImplementedError
 
     def rad_to_raw(self, angle, initial_position_raw, flipped, encoder_ticks_per_radian):
