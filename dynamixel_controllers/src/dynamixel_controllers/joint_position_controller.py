@@ -181,13 +181,11 @@ class JointPositionController(JointController):
                 self.joint_state_pub.publish(self.joint_state)
 
     def process_command(self, msg):
-        rospy.loginfo('Im in joint_position_controller.py')
         angle = msg.data
         mcv = (self.motor_id, self.pos_rad_to_raw(angle))
         self.dxl_io.set_multi_position([mcv])
 
     def process_command_with_speed(self, msg):
-        rospy.loginfo('Processing command with speed');
         angle = msg.data[0]
         speed = msg.data[1]
         self.set_speed(speed)
